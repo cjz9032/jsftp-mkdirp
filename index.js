@@ -1,10 +1,9 @@
 'use strict';
 var parents = require('parents');
-var slash = require('slash');
 
 function mkdirp(dir, cb) {
 	if (typeof dir !== 'string') {
-		throw new Error('`path` is required');
+		throw new Error('`path` is required.');
 	}
 
 	cb = cb || function () {};
@@ -21,20 +20,18 @@ function mkdirp(dir, cb) {
 	}
 
 	var mkdir = function (dir) {
-		dir = slash(dir);
-
+		dir = dir.replace(/\\/g, '/');
 		this.raw.mkd(dir, function (err) {
-			if (err && err.code === 550) {
+			if (err && (err.code === 550|| err.code === 521) ) {
 				if (dirs.length > 0) {
 					return mkdir(dirs.pop());
 				}
 
 				return cb();
 			}
-
 			if (err) {
 				err.message += ' - mkd: ' + dir;
-				return cb(err);
+			 //	return cb(err);
 			}
 
 			if (dirs.length > 0) {
